@@ -2,7 +2,7 @@ use std::ops::{Add, Mul, Sub, Div};
 /*
 Implementation of Vector3
  */
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Vector3 {
     pub x : f64,
     pub y : f64,
@@ -128,4 +128,60 @@ impl Mul<Vector3> for f64{
    fn mul(self, rhs: Vector3) -> Self::Output {
       Self::Output{x: self * rhs.x, y : self * rhs.y, z : self * rhs.z} 
    }
+}
+
+
+#[cfg(test)]
+mod tests 
+{
+    use super::*;
+
+    #[test]
+    fn test_cross() {
+        assert_eq!(Vector3{x:1.0, y:0.0, z:0.0}.cross(&Vector3{x:0.0,y:1.0,z:0.0}), Vector3{x:0.0,y:0.0,z:1.0});
+    }
+    #[test]
+    fn test_add() {
+        assert_eq!(Vector3{x:1.0, y:1.0, z:1.0} + Vector3{x:1.0,y:1.0,z:1.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_add_ref() {
+        assert_eq!(&Vector3{x:1.0, y:1.0, z:1.0} + &Vector3{x:1.0,y:1.0,z:1.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_sub_ref() {
+        assert_eq!(&Vector3{x:3.0, y:3.0, z:3.0} - &Vector3{x:1.0,y:1.0,z:1.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_sub() {
+        assert_eq!(Vector3{x:3.0, y:3.0, z:3.0} - Vector3{x:1.0,y:1.0,z:1.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_mul() {
+        assert_eq!(Vector3{x:1.0, y:1.0, z:1.0} * Vector3{x:2.0,y:2.0,z:2.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_mul_ref() {
+        assert_eq!(&Vector3{x:1.0, y:1.0, z:1.0} * &Vector3{x:2.0,y:2.0,z:2.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_mul_real() {
+        assert_eq!(Vector3{x:1.0, y:1.0, z:1.0} * 2.0, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_mul_real_rev() {
+        assert_eq!(2.0 * Vector3{x:1.0, y:1.0, z:1.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_mul_real_ref() {
+        assert_eq!(&Vector3{x:1.0, y:1.0, z:1.0} * 2.0, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_mul_real_rev_ref() {
+        assert_eq!(2.0 * &Vector3{x:1.0, y:1.0, z:1.0}, Vector3{x:2.0,y:2.0,z:2.0});
+    }
+    #[test]
+    fn test_div_ref() {
+        assert_eq!(&Vector3{x:4.0, y:4.0, z:4.0} / 2.0 as f64, Vector3{x:2.0,y:2.0,z:2.0});
+    }
 }
