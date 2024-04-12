@@ -20,12 +20,12 @@ pub struct PinholeCamera {
 impl Camera for PinholeCamera {
     fn generate_first_ray(&self, i:usize, j:usize)->Ray {
         let dist_censor_to_pos = self.screen_width*0.5 / f64::tan(self.aov*0.5);
-        let censor_pos = &(self.cam_pos) + &(dist_censor_to_pos * &self.cam_forward);
+        let censor_pos = &self.cam_pos + &(dist_censor_to_pos * &self.cam_forward);
         let left_up_pos = censor_pos 
-                                 + 0.5 * (&(&(self.cam_up) * self.screen_height) - &(&(self.cam_right) * self.screen_width));
-        let start_pos = left_up_pos + j as f64 * self.pixel_size * &(self.cam_right)
-                                             - i as f64 * self.pixel_size * &(self.cam_up);
-        Ray { org: self.cam_pos.clone(), dir: (&start_pos - &(self.cam_pos)).normalize() }
+                                 + 0.5 * (&(&self.cam_up * self.screen_height) - &(&self.cam_right * self.screen_width));
+        let start_pos = left_up_pos + j as f64 * self.pixel_size * &self.cam_right
+                                             - i as f64 * self.pixel_size * &self.cam_up;
+        Ray { org: self.cam_pos.clone(), dir: (&start_pos - &self.cam_pos).normalize() }
     }
 }
 

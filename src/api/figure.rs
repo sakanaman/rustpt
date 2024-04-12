@@ -21,7 +21,7 @@ pub struct Sphere {
 
 impl Intersect for Sphere {
     fn intersect(&self, ray : &Ray, object_id : &usize) -> Option<Hit> {
-        let p_o = &(self.position) - &(ray.org);
+        let p_o = &self.position - &ray.org;
         let b = p_o.dot(&ray.dir);
         let d4 = b*b - p_o.length2() + self.radius * self.radius;
 
@@ -40,8 +40,8 @@ impl Intersect for Sphere {
         };
 
         let distance_ =  if t1 > eps {t1} else {t2};
-        let position_ = &(ray.org) + &(distance_ * &(ray.dir)); 
-        let normal_ = (&position_ - &(self.position)).normalize();
+        let position_ = &(ray.org) + &(distance_ * &ray.dir); 
+        let normal_ = (&position_ - &self.position).normalize();
 
         Some(Hit{distance:distance_,normal:normal_,position:position_,object_id:object_id.clone()})
     }
