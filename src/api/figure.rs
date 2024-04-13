@@ -2,6 +2,7 @@ use crate::api::vector::Vector3;
 use crate::api::ray::Ray;
 use crate::api::material::Material;
 
+#[derive(Debug,PartialEq)]
 pub struct Hit {
     pub distance : f64,
     pub normal : Vector3,
@@ -49,4 +50,37 @@ impl Intersect for Sphere {
 
 pub enum Figure {
     Sphere(Sphere)
+}
+
+
+#[cfg(test)]
+mod tests {
+    use crate::api::material::Diffuse;
+
+    use super::*;
+
+    #[test]
+    fn test_sphere_intersect() {
+        let test_sphere = Sphere{radius:1.0,
+                                         position:Vector3{x:0.0,y:0.0,z:0.0},
+                                         emission:Vector3{x:1.0,y:1.0,z:1.0},
+                                         material:Material::Diffuse(Diffuse{albedo:Vector3 { x: 1.0, y: 1.0, z: 1.0 }})};
+        let test_ray = Ray{org:Vector3 { x: 2.0, y: 0.0, z: 0.0 }, dir:Vector3 { x: -1.0, y: 0.0, z: 0.0 }};
+        let object_id_:usize = 10;
+        assert_eq!(test_sphere.intersect(&test_ray, &object_id_), Some(Hit{distance:1.0, 
+                                                                          normal:Vector3 { x: 1.0, y: 0.0, z: 0.0 },
+                                                                          position:Vector3 { x: 1.0, y: 0.0, z: 0.0 },
+                                                                          object_id:object_id_}));
+    }
+
+    #[test]
+    fn test_sphere_intersect_void() {
+        let test_sphere = Sphere{radius:1.0,
+                                         position:Vector3{x:0.0,y:0.0,z:0.0},
+                                         emission:Vector3{x:1.0,y:1.0,z:1.0},
+                                         material:Material::Diffuse(Diffuse{albedo:Vector3 { x: 1.0, y: 1.0, z: 1.0 }})};
+        let test_ray = Ray{org:Vector3 { x: 2.0, y: 3.0, z: 0.0 }, dir:Vector3 { x: -1.0, y: 0.0, z: 0.0 }};
+        let object_id_:usize = 10;
+        assert_eq!(test_sphere.intersect(&test_ray, &object_id_), None);
+    }
 }
