@@ -17,6 +17,28 @@ pub struct PinholeCamera {
     pub pixel_size : f64
 }
 
+pub fn new_edupt(width: usize, height: usize) -> PinholeCamera {
+    let cam_pos =  Vector3{x:50.0, y:52.0, z:52.0};
+    let cam_up =  Vector3{x:0.0, y:1.0, z:0.0};
+    let cam_forward = Vector3{x:0.0, y:-0.04, z:-1.0}.normalize();
+    let cam_right = cam_up.cross(&cam_forward).normalize();
+    let screen_width = 30.0 * (width as f64) / (height as f64);
+    let screen_height = 30.0;
+    let aov= 90.0;
+    let pixel_size = screen_height / (height as f64);
+
+    PinholeCamera{
+        cam_pos,
+        cam_forward,
+        cam_right,
+        cam_up,
+        screen_width,
+        screen_height,
+        aov,
+        pixel_size
+    }
+}
+
 impl Camera for PinholeCamera {
     fn generate_first_ray(&self, i:usize, j:usize)->Ray {
         let dist_censor_to_pos = self.screen_width*0.5 / f64::tan(self.aov*0.5);

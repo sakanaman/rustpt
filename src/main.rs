@@ -9,7 +9,7 @@ use api::{figure::Figure, material::Material, search::LinearSearch, vector::Vect
 use api::material::Diffuse;
 
 use crate::api::camera::Camera;
-use crate::api::camera::PinholeCamera;
+use crate::api::camera::new_edupt;
 use crate::api::figure::Sphere;
 use image;
 
@@ -24,8 +24,8 @@ fn main() {
             ),
         ];
     let searcher = Arc::new(LinearSearch{figures:scene});
-    let width = 225;
-    let height = 225;
+    let width = 640;
+    let height = 480;
     // let aspect_ratio = width as f64 / height as f64;
     let spp = 100;
     const THREAD_NUM : i32 = 8;
@@ -34,15 +34,7 @@ fn main() {
 
     let mut thrd:Vec<JoinHandle<()>> = Vec::new();
 
-    let pcam = Arc::new(PinholeCamera{cam_pos:Vector3{ x: 0.0, y: 0.0, z: 0.0 },
-                                                                cam_forward:Vector3{ x: 0.0, y: 0.0, z: 0.0 },
-                                                                cam_right:Vector3{ x: 0.0, y: 0.0, z: 0.0 },
-                                                                cam_up:Vector3{ x: 0.0, y: 0.0, z: 0.0 },
-                                                                screen_width:0.0,
-                                                                screen_height:0.0,
-                                                                aov:0.0,
-                                                                pixel_size:0.0
-                                                            });
+    let pcam = Arc::new(new_edupt(width, height));
 
     for thread_id in 0..THREAD_NUM {
         let data_local = Arc::clone(&data);
