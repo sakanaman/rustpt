@@ -13,6 +13,20 @@ use crate::api::camera::new_edupt;
 use crate::api::figure::Sphere;
 use image;
 
+fn make_image(data : Arc<Mutex<Vec<f64>>>, width : usize, height : usize, filename: String)
+{
+    let mut data_image = image::RgbImage::new(width.clone() as u32, height.clone() as u32);
+
+    let locked_data = data.lock().unwrap();
+    for (x, y, pixel) in data_image.enumerate_pixels_mut() {
+        let index =  y*width as u32*3 + x*3;
+        *pixel = image::Rgb([(locked_data[index as usize    ] * 255.0) as u8, 
+                             (locked_data[index as usize + 1] * 255.0) as u8, 
+                             (locked_data[index as usize + 2] * 255.0) as u8]);
+    }
+    data_image.save(filename).unwrap();
+}
+
 fn main() {
    let scene = 
     vec![
@@ -62,15 +76,7 @@ fn main() {
         let _ = th.join();
     });
 
-    let mut data_image = image::RgbImage::new(width.clone() as u32, height.clone() as u32);
-
-    let locked_data = data.lock().unwrap();
-    for (x, y, pixel) in data_image.enumerate_pixels_mut() {
-        let index =  y*width as u32*3 + x*3;
-        *pixel = image::Rgb([(locked_data[index as usize    ] * 255.0) as u8, 
-                             (locked_data[index as usize + 1] * 255.0) as u8, 
-                             (locked_data[index as usize + 2] * 255.0) as u8]);
-    }
-    data_image.save("result.png").unwrap();
+    let filename = "result.png".to_string();
+    make_image(data, width, height, filename);
 
 }
