@@ -1,5 +1,5 @@
 use crate::api::vector::Vector3;
-
+use std::f64::consts::PI;
 use super::ray::Ray;
 
 pub trait Camera {
@@ -18,13 +18,13 @@ pub struct PinholeCamera {
 }
 
 pub fn new_edupt(width: usize, height: usize) -> PinholeCamera {
-    let cam_pos =  Vector3{x:50.0, y:52.0, z:52.0};
+    let cam_pos =  Vector3{x:50.0, y:50.0, z:220.0};
     let cam_up =  Vector3{x:0.0, y:1.0, z:0.0};
     let cam_forward = Vector3{x:0.0, y:-0.04, z:-1.0}.normalize();
     let cam_right = cam_up.cross(&cam_forward).normalize();
     let screen_width = 30.0 * (width as f64) / (height as f64);
     let screen_height = 30.0;
-    let aov= 90.0;
+    let aov= PI * 0.25;
     let pixel_size = screen_height / (height as f64);
 
     PinholeCamera{

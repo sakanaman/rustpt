@@ -1,4 +1,5 @@
 use std::ops::{Add, Mul, Sub, Div};
+use libm::copysign;
 /*
 Implementation of Vector3
  */
@@ -10,10 +11,8 @@ pub struct Vector3 {
 }
 
 
-pub static E1 : Vector3 = Vector3{x:1.0, y:0.0, z:0.0};
-pub static E2: Vector3 = Vector3{x:0.0, y:1.0, z:0.0};
 // pub const DIVABLE_DELTA : f64 = 1.0; 
-pub const INF_DISTANCE : f64 = 1e+8;
+pub const INF_DISTANCE : f64 = 1e+9;
 
 impl Vector3 {
     pub fn cross(&self, rhs : &Self)->Self{
@@ -43,12 +42,16 @@ impl Vector3 {
     }
 
     pub fn onb(&self) -> (Self, Self) {
-        let mut u = self.cross(&E1);
-        if u.length() < 1e-6 {
-           u = self.cross(&E2);
-        };        
-        let other_vec = self.cross(&u);
-        (u, other_vec)
+        let sign = copysign(1.0, self.y);
+        let a = -1.0 / (sign + self.y);
+        let b = self.x * self.z * a;
+        let b1 = Vector3{x: 1.0 + sign * self.x * self.x * a, 
+                                  y: -sign * self.x,
+                                  z: sign * b};
+        let b2 = Vector3{x: b,
+                                  y: -self.z,
+                                  z: sign + self.z*self.z*a};
+        (b1, b2)
     }
 }
 
@@ -158,7 +161,7 @@ mod tests
     }
     #[test]
     fn test_mul() {
-        assert_eq!(Vector3{x:1.0, y:1.0, z:1.0} * Vector3{x:2.0,y:2.0,z:2.0}, Vector3{x:2.0,y:2.0,z:2.0});
+        assert_eq!(Vector3{x:2.0, y:3.0, z:4.0} * Vector3{x:2.0,y:2.0,z:9.0}, Vector3{x:4.0,y:6.0,z:36.0});
     }
     #[test]
     fn test_mul_ref() {
