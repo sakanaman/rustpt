@@ -105,8 +105,8 @@ fn main() {
             ),
         ];
     let searcher = Arc::new(LinearSearch{figures:scene});
-    let width = 252;
-    let height = 252;
+    let width = 640;
+    let height = 480;
     // let aspect_ratio = width as f64 / height as f64;
     let spp = 1000;
     const THREAD_NUM : i32 = 8;
